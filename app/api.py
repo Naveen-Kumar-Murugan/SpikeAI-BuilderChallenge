@@ -16,6 +16,6 @@ def query_endpoint(req: QueryRequest):
         property_id=req.propertyId
     )
 
-    return {
-        "answer": result.get("answer", "No answer could be generated.")
-    }
+    answer_text = result.get("answer", "No answer available.")
+
+    return Response(content=answer_text, media_type="text/plain")
