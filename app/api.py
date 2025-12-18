@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.orchestrator import handle_query
+from app.orchestrator import Orchestrator
 
 router = APIRouter()
+orchestrator = Orchestrator()
 
 class QueryRequest(BaseModel):
     query: str
@@ -10,4 +11,11 @@ class QueryRequest(BaseModel):
 
 @router.post("/query")
 def query_endpoint(req: QueryRequest):
-    return handle_query(req)
+    result = orchestrator.handle_query(
+        question=req.query,
+        property_id=req.propertyId
+    )
+
+    return {
+        "answer": result.get("answer", "No answer could be generated.")
+    }
