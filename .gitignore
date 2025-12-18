@@ -1,0 +1,77 @@
+# .gitignore for a Python project (macOS + common editors)
+# Ignore sensitive files and local environment
+
+# Environment files and secrets
+.env
+.env.*
+credentials.json
+secrets.json
+*.key
+*.pem
+*.crt
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.Python
+__pycache__
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Test / coverage
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Type checkers / caches
+.mypy_cache/
+.pyre/
+.pytype/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Logs and local databases
+*.log
+*.sqlite3
+*.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Wheels / eggs
+*.egg
+*.whl
+
+# Misc
+.cache/
+coverage.xml
+
+# Optionally ignore large files (uncomment to use)
+# *.tar.gz
+# *.zip
+
+# NOTE: If you need to keep a sample of your credentials for onboarding,
+# add a tracked file like `credentials.example.json` (without real secrets).
