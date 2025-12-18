@@ -10,9 +10,6 @@ client = OpenAI(
 )
 
 def ask_llm(system_prompt, user_prompt):
-    print("Asking LLM...")
-    print(f"System Prompt: {system_prompt}")
-    print(f"User Prompt: {user_prompt}")
     response = client.chat.completions.create(
         model="gemini-2.5-flash",
         messages=[
@@ -20,5 +17,4 @@ def ask_llm(system_prompt, user_prompt):
             {"role": "user", "content": user_prompt}
         ],
     )
-    print("Received response from LLM.",response)
     return response.choices[0].message.content

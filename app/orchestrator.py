@@ -9,12 +9,11 @@ def handle_query(req):
             "page", "views", "users", "sessions", "traffic"
         ]
     )
-    print(f"Detected is_analytics: {is_analytics}")
-    if is_analytics:
-        if not req.propertyId:
-            raise ValueError("propertyId is required for GA4 queries")
-        return handle_analytics_query(req.query, req.propertyId)
+    # if is_analytics:
+    if not req.propertyId:
+        raise ValueError("propertyId is required for GA4 queries")
+    return handle_analytics_query(req.query, req.propertyId)
 
-    return {
-        "error": "Unsupported query type for now"
-    }
+    # return {
+    #     "error": "Unsupported query type for now"
+    # }
