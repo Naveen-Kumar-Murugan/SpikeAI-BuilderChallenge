@@ -1,5 +1,9 @@
 # Spike AI Builder Challenge — Analytics & SEO Assistant Agent ✅
 
+⚠️ **Important — wait for server startup before issuing requests**
+
+When you start the application (for example via ` bash deploy.sh`), the server can take a few seconds to initialize and accept incoming requests. Please monitor the `server.log` file (e.g., `tail -f server.log`) and wait until you see the server report that it is running before executing the `curl` examples below.
+
 A lightweight multi-agent analytics assistant that combines Google Sheets (Screaming Frog exports) and Google Analytics 4 data with an LLM to answer natural-language questions about SEO and analytics.
 
 ---
