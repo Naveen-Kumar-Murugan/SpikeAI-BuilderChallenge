@@ -1,6 +1,7 @@
 import pandas as pd
 from app.services.sheets_service import build_union_table
 from app.llm.client import ask_llm
+from app.logger import get_logger
 from app.llm.prompts import seo_agent_prompt
 
 
@@ -35,7 +36,8 @@ class SEOAgent:
         user_prompt = seo_agent_prompt(columns, question, sample=data_sample)
         pandas_code = ask_llm(system_prompt, user_prompt)
         pandas_code = self._clean_pandas_code(pandas_code)
-        print("Generated pandas code:\n", pandas_code)
+        self.logger = get_logger(__name__)
+        self.logger.debug("Generated pandas code:\n%s", pandas_code)
 
         try:
             local_vars = {"df": self.df.copy(), "pd": pd}
@@ -45,12 +47,28 @@ class SEOAgent:
             return {"error": f"Failed to execute pandas code: {str(e)}"}
 
         if structured:
+            if isinstance(result_df, pd.DataFrame):
+                return {
+                    "type": "table",
+                    "results": result_df.to_dict(orient="records"),
+                    "count": len(result_df),
+                }
+                
+            if isinstance(result_df, pd.Series):
+                return {
+                    "type": "table",
+                    "results": result_df.reset_index().to_dict(orient="records"),
+                    "count": int(result_df.sum()) if result_df.dtype != object else len(result_df),
+                }
+
+            if isinstance(result_df, (int, float)):
+                return {
+                    "type": "metric",
+                    "value": result_df,
+                }
+
             return {
-                "results": result_df.to_dict(orient="records"),
-                "count": len(result_df),
+                "type": "unknown",
+                "value": str(result_df),
             }
-        else:
-            return {
-                "results": result_df.head(10).to_string(index=False),
-                "count": len(result_df),
-            }
+

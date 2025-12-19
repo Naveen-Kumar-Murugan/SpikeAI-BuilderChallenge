@@ -2,6 +2,7 @@ import os
 from typing import Dict, Any
 
 from dotenv import load_dotenv
+from app.logger import get_logger
 
 from app.llm.client import ask_llm
 from app.agents.seo_agent import SEOAgent
@@ -58,6 +59,7 @@ Analytics Result:
 
 class Orchestrator:
     def __init__(self):
+        self.logger = get_logger(__name__)
         self.seo_agent = SEOAgent(SPREADSHEET_URL)
         self.analytics_agent = AnalyticsAgent()
 
@@ -78,7 +80,7 @@ class Orchestrator:
         """
 
         intent = self._detect_intent(question)
-        print("Detected intent:", intent)
+        self.logger.info("Detected intent: %s", intent)
 
         seo_result = None
         analytics_result = None
@@ -99,7 +101,7 @@ class Orchestrator:
                 query=question,
                 property_id=property_id
             )
-
+        self.logger.info("Generating final answer from agent results")
         final_answer = ask_llm(
             system_prompt="You generate final answers.",
             user_prompt=FINAL_ANSWER_PROMPT.format(
@@ -107,7 +109,7 @@ class Orchestrator:
                 analytics_result=analytics_result
             )
         )
-
+        self.logger.info("Final answer generated")
         return {
             "intent": intent,
             "seo": seo_result,

@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import gspread
 from google.oauth2.service_account import Credentials
+from app.logger import get_logger
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
@@ -28,6 +29,9 @@ def load_screaming_frog_sheet(spreadsheet_url: str, sheet_name: str) -> pd.DataF
     return df
 
 def build_union_table(spreadsheet_url: str) -> pd.DataFrame:
+    logger = get_logger(__name__)
+
+    logger.info("Building union table from spreadsheet...")
     client = get_gspread_client()
     spreadsheet = client.open_by_url(spreadsheet_url)
 
@@ -52,6 +56,7 @@ def build_union_table(spreadsheet_url: str) -> pd.DataFrame:
         all_dfs.append(df)
 
     if not all_dfs:
+        logger.info("No data found in spreadsheet worksheets; returning empty DataFrame")
         return pd.DataFrame()
 
     union_df = pd.concat(all_dfs, ignore_index=True, sort=False)
@@ -61,6 +66,6 @@ def build_union_table(spreadsheet_url: str) -> pd.DataFrame:
         .groupby("Address", as_index=False)
         .first()
     )
-
+    logger.info("Union table built with %d unique addresses.", len(union_df))
     return union_df
 

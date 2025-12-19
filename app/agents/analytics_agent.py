@@ -3,6 +3,7 @@ import re
 import os
 from app.llm.client import ask_llm
 from app.services.ga4_service import run_ga4_query
+from app.logger import get_logger
 
 def load_allowed_fields(path="ga4_allowed_fields.txt"):
     """
@@ -81,6 +82,7 @@ Guidelines:
 class AnalyticsAgent:
     def __init__(self):
         self.system_prompt = SYSTEM_PROMPT
+        self.logger = get_logger(__name__)
 
     def handle_query(self, query: str, property_id: str):
         llm_response = ask_llm(
@@ -107,9 +109,10 @@ class AnalyticsAgent:
         if not plan.get("dimensions"):
             plan["dimensions"] = [{"name": "date"}]
 
-        print("Executing GA4 query with plan:", plan)
+        self.logger.info("Executing GA4 query with plan: %s", plan)
         plan.setdefault("keepEmptyRows", True)
         response = run_ga4_query(plan, property_id)
+        self.logger.info("GA4 query response received")
         rows = response.get("rows", [])
 
         return {

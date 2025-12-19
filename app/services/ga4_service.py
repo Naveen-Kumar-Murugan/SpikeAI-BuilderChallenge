@@ -1,4 +1,5 @@
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from app.logger import get_logger
 from google.analytics.data_v1beta.types import (
     DateRange, Metric, Dimension, RunReportRequest
 )
@@ -23,10 +24,11 @@ def normalize_fields(items, field_name):
 
 
 def run_ga4_query(plan, property_id):
+    logger = get_logger(__name__)
     client = BetaAnalyticsDataClient.from_service_account_file(
         "credentials.json"
     )
-    print(f"Using property ID: {property_id}")
+    logger.info("Loaded GA4 credentials, property: %s", property_id)
     metric_names = normalize_fields(plan["metrics"], "metric")
     dimension_names = normalize_fields(plan["dimensions"], "dimension")
 
@@ -48,7 +50,9 @@ def run_ga4_query(plan, property_id):
         dimensions=dimensions,
         date_ranges=date_ranges
     )
+    logger.info("Running GA4 report")
     response = client.run_report(request)
+    logger.info("GA4 report received (%d rows)", len(getattr(response, 'rows', []) or []))
     rows = []
     for row in response.rows:
         rows.append({
