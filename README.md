@@ -1,4 +1,4 @@
-# Spike AI — Analytics & SEO Assistant ✅
+# Spike AI Builder Challenge — Analytics & SEO Assistant Agent ✅
 
 A lightweight multi-agent analytics assistant that combines Google Sheets (Screaming Frog exports) and Google Analytics 4 data with an LLM to answer natural-language questions about SEO and analytics.
 
